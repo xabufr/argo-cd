@@ -4,21 +4,23 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"regexp"
 
 	"github.com/google/go-github/v63/github"
 	"golang.org/x/oauth2"
 )
 
 type GithubService struct {
-	client *github.Client
-	owner  string
-	repo   string
-	labels []string
+	client      *github.Client
+	owner       string
+	repo        string
+	labels      []string
+	labelsMatch []string
 }
 
 var _ PullRequestService = (*GithubService)(nil)
 
-func NewGithubService(ctx context.Context, token, url, owner, repo string, labels []string) (PullRequestService, error) {
+func NewGithubService(ctx context.Context, token, url, owner, repo string, labels []string, labelsMatch []string) (PullRequestService, error) {
 	var ts oauth2.TokenSource
 	// Undocumented environment variable to set a default token, to be used in testing to dodge anonymous rate limits.
 	if token == "" {
@@ -41,10 +43,11 @@ func NewGithubService(ctx context.Context, token, url, owner, repo string, label
 		}
 	}
 	return &GithubService{
-		client: client,
-		owner:  owner,
-		repo:   repo,
-		labels: labels,
+		client:      client,
+		owner:       owner,
+		repo:        repo,
+		labels:      labels,
+		labelsMatch: labelsMatch,
 	}, nil
 }
 
@@ -62,6 +65,9 @@ func (g *GithubService) List(ctx context.Context) ([]*PullRequest, error) {
 		}
 		for _, pull := range pulls {
 			if !containLabels(g.labels, pull.Labels) {
+				continue
+			}
+			if !allLabelsMatches(g.labelsMatch, pull.Labels) {
 				continue
 			}
 			pullRequests = append(pullRequests, &PullRequest{
@@ -109,4 +115,19 @@ func getGithubPRLabelNames(gitHubLabels []*github.Label) []string {
 		labelNames = append(labelNames, *gitHubLabel.Name)
 	}
 	return labelNames
+}
+
+func allLabelsMatches(labelRegexes []string, labels []*github.Label) bool {
+	for _, labelRegex := range labelRegexes {
+		matched := false
+		for _, label := range labels {
+			if matched, _ = regexp.MatchString(labelRegex, *label.Name); matched {
+				break
+			}
+		}
+		if !matched {
+			return false
+		}
+	}
+	return true
 }
