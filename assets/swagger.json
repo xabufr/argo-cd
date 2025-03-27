@@ -8249,6 +8249,13 @@
             "type": "string"
           }
         },
+        "labelsMatch": {
+          "description": "LabelsMatch is used to filter the PRs that you want to target using regex. LabelsMatch are ANDed.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "owner": {
           "description": "GitHub org or user to scan. Required.",
           "type": "string"

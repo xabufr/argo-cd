@@ -5852,6 +5852,10 @@ spec:
                                         items:
                                           type: string
                                         type: array
+                                      labelsMatch:
+                                        items:
+                                          type: string
+                                        type: array
                                       owner:
                                         type: string
                                       repo:
@@ -11282,6 +11286,10 @@ spec:
                                         items:
                                           type: string
                                         type: array
+                                      labelsMatch:
+                                        items:
+                                          type: string
+                                        type: array
                                       owner:
                                         type: string
                                       repo:
@@ -14200,6 +14208,10 @@ spec:
                             appSecretName:
                               type: string
                             labels:
+                              items:
+                                type: string
+                              type: array
+                            labelsMatch:
                               items:
                                 type: string
                               type: array

@@ -3242,6 +3242,11 @@ func (in *PullRequestGeneratorGithub) DeepCopyInto(out *PullRequestGeneratorGith
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
+	if in.LabelsMatch != nil {
+		in, out := &in.LabelsMatch, &out.LabelsMatch
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	return
 }
 

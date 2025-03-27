@@ -1578,6 +1578,9 @@ message PullRequestGeneratorGithub {
 
   // Labels is used to filter the PRs that you want to target
   repeated string labels = 6;
+
+  // LabelsMatch is used to filter the PRs that you want to target using regex. LabelsMatch are ANDed.
+  repeated string labelsMatch = 7;
 }
 
 message RefTarget {
